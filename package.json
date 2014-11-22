@@ -4,7 +4,7 @@
   "description": "A thing to mix up users and their playlists.",
   "main": "index.js",
   "scripts": {
-    "test": "tap test/*.js"
+    "test": "tap test.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/ArtskydJ/playlist-combinator/issues"
   },
-  "homepage": "https://github.com/ArtskydJ/playlist-combinator"
+  "homepage": "https://github.com/ArtskydJ/playlist-combinator",
+  "devDependencies": {
+    "tap": "^0.4.13"
+  }
 }

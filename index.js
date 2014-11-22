@@ -1,9 +1,15 @@
 var EventEmitter = require('events').EventEmitter
 
 function getNextItem(emitErr, queues, queueKeys) { //emitter, queues, and queueKeys are bound
-	var key = queueKeys.shift()
-	var item = queues[key].shift()
-	queueKeys.push(key)
+	var maxRepeat = queueKeys.length
+	for (var i = 1; i<=maxRepeat && i>0; i++) {
+		var key = queueKeys.shift()
+		if (queues[key].length) {
+			var item = queues[key].shift()
+			i = -1
+		}
+		queueKeys.push(key)
+	}
 	return item
 }
 
@@ -29,23 +35,23 @@ function reorder(emitErr, queues, queueKey, thing1, thing2) { //emitter and queu
 	function reorderItem(itemId, newIndex) {
 		var queue = queues[queueKey]
 		var oldIndex = queue.map(function (item, index) {
-			return (itemId === item.id) ? index : NaN
-		}).filter(!isNaN)[0]
+			return (itemId === item.id) ? index : Infinity
+		}).filter(isFinite)[0]
 
 		if (oldIndex && newIndex) {
 			var cutItem = queue.splice(oldIndex, 1)[0] //cut
-			queue.splice(newIndex + add, 0, cutItem)   //paste
+			queue.splice(newIndex, 0, cutItem)   //paste
 		}
 		return queue
 	}
 
 	if (typeof thing1 === 'object') {
 		reorderQueue(thing1)
-	} else if (typeof thing1 === 'string' && typeof thing2 === 'number') {
+	} else if (typeof thing2 === 'number') {
 		var newQueue = reorderItem(thing1, thing2)
 		reorderQueue(newQueue)
 	} else {
-		var args = [].slice.call(arguments, 1).join(', ')
+		var args = [].slice.call(arguments, 2).join(', ')
 		emitErr(new TypeError('Invalid arguments passed to reorder( ' + args + ' )'))
 	}
 }

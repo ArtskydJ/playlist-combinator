@@ -3,6 +3,7 @@ var Playlist = require('./index.js')
 
 test('addUser, getNextSong', function (t) {
 	var play = Playlist()
+	play.on('error', t.fail.bind(t))
 	play.addUser('joseph', [{id: 0}, {id:2}, {id:4}, {id:5}, {id:6}])
 	play.addUser('josh', [{id:1}, {id:3}])
 
@@ -15,6 +16,7 @@ test('addUser, getNextSong', function (t) {
 
 test('addSong', function (t) {
 	var play = Playlist()
+	play.on('error', t.fail.bind(t))
 	play.addUser('joseph')
 	;[ {id: 0}, {id:2}, {id:4}, {id:5}, {id:6} ]
 		.forEach( play.addSong.bind(null, 'joseph') )
@@ -30,6 +32,7 @@ test('addSong', function (t) {
 
 test('reorderSong array', function (t) {
 	var play = Playlist()
+	play.on('error', t.fail.bind(t))
 	play.addUser('joseph', [{id:1}, {id:3}])
 	play.addUser('josh', [{id:1}, {id:3}])
 
@@ -44,10 +47,11 @@ test('reorderSong array', function (t) {
 
 test('reorderSong id, index', function (t) {
 	var play = Playlist()
+	play.on('error', t.fail.bind(t))
 	play.addUser('joseph', [{id: 4}, {id:2}, {id:6}, {id:0}, {id:5}])
 	play.addUser('josh', [{id:1}, {id:3}])
 
-	play.reorderSong('joseph', 4, 3)
+	play.reorderSong('joseph', 4, 1)
 	play.reorderSong('joseph', 0, 0)
 	play.reorderSong('joseph', 5, 3)
 
@@ -60,6 +64,7 @@ test('reorderSong id, index', function (t) {
 
 test('removeUser', function (t) {
 	var play = Playlist()
+	play.on('error', t.fail.bind(t))
 	play.addUser('joseph', [{id: 0}, {id:2}, {id:5}, {id:6}])
 	play.addUser('josh', [{id:0}, {id:1}, {id:3}, {id:4} ])
 
