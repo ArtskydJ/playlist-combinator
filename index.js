@@ -1,9 +1,10 @@
 var EventEmitter = require('events').EventEmitter
 
 function getNextItem(emitErr, queues, queueKeys) { //emitter, queues, and queueKeys are bound
-	//finds the next user,
-	//removes the next song from their queue and returns/removes it.
-	//Moves that user to the back of the user list
+	var key = queueKeys.shift()
+	var item = queues[key].shift()
+	queueKeys.push(key)
+	return item
 }
 
 function addItem(emitErr, queues, queueKey, newItem) { //emitter and queues are bound
