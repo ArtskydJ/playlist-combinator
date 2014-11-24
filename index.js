@@ -1,20 +1,26 @@
 var EventEmitter = require('events').EventEmitter
 
 function getNextItem(emitErr, queues, queueKeys) { //emitter, queues, and queueKeys are bound
-	var maxRepeat = queueKeys.length
-	for (var i = 1; i<=maxRepeat && i>0; i++) {
+	var n1 = Object.keys(queues).length
+	var n2 = queueKeys.length
+	if (n1 !== n2) {
+		emitErr(new Error('Number of keys in \'queues\', (' + n1 + ') doesn\'t match \'queueKeys.length\', (' + n2 + ').'))
+	}
+	var maxRepeat = Object.keys(queues).length
+
+	for (var i = 0; i<=maxRepeat; i++) {
 		var key = queueKeys.shift()
 		if (queues[key].length) {
 			var item = queues[key].shift()
-			i = -1
+			i = maxRepeat + 1
 		}
 		queueKeys.push(key)
 	}
-	return item
+	return item || null
 }
 
 function addItem(emitErr, queues, queueKey, newItem) { //emitter and queues are bound
-	if (queues[queueKey].push && newItem) {
+	if (queues[queueKey] && queues[queueKey].push && newItem) {
 		queues[queueKey].push(newItem)
 	} else if (!newItem) {
 		emitErr(new TypeError('Invalid newItem: ' + queueKey))
@@ -38,7 +44,7 @@ function reorder(emitErr, queues, queueKey, thing1, thing2) { //emitter and queu
 			return (itemId === item.id) ? index : Infinity
 		}).filter(isFinite)[0]
 
-		if (oldIndex && newIndex) {
+		if (typeof oldIndex === 'number' && typeof newIndex === 'number') {
 			var cutItem = queue.splice(oldIndex, 1)[0] //cut
 			queue.splice(newIndex, 0, cutItem)   //paste
 		}
@@ -58,9 +64,15 @@ function reorder(emitErr, queues, queueKey, thing1, thing2) { //emitter and queu
 
 function addKey(emitErr, queues, queueKeys, queueKey, state) { //emitter, queues, and queueKeys are bound
 	if (typeof queueKey === 'string') {
-		queueKeys.push(queueKey)
-		queues[queueKey] = state || []
-	} else {
+		var notInQueueKeys = queueKeys.indexOf(queueKey) === -1
+		var notAQueue = !queues[queueKey]
+		if (notInQueueKeys && notAQueue) {
+			queueKeys.push(queueKey)
+			queues[queueKey] = state || []
+		} else {
+			emitErr(new Error('Attempting to add a duplicate user.'))
+		}
+	} else if (typeof queueKey === 'string'){
 		emitErr(new TypeError('queueKey should be a string, but is a ' + typeof queueKey))
 	}
 }
@@ -69,6 +81,8 @@ function removeKey(emitErr, queues, queueKeys, queueKey) { //emitter, queues, an
 	if (typeof queueKey === 'string') {
 		queueKeys.splice(queueKeys.indexOf(queueKey), 1) //cut from array
 		var state = queues[queueKey]
+		delete queues[queueKey] //OR queues[queueKey] = null
+		return state
 	} else {
 		emitErr(new TypeError('queueKey should be a string, but is a ' + typeof queueKey))
 		return null
