@@ -1,6 +1,10 @@
 playlist-combinator
 ===================
 
+A javascript module to rotate through multiple users' music queues.
+
+#usage
+
 Run this code:
 ```js
 var playlist = require('playlist-combinator')()
@@ -11,7 +15,7 @@ playlist.on('error', function (err) {
 playlist.addUser('josh@example.com', [ { id: 'hash', title: 'whatever' } ])
 playlist.addUser('joseph@example.com')
 
-playlist.addSong('joseph@example.com', { id: 'otherhash, title: 'whatever 2' })
+playlist.addSong('joseph@example.com', { id: 'otherhash', title: 'whatever 2' })
 playlist.addSong('joseph@example.com', { id: 'somemoreid', title: 'o, hi' })
 playlist.addSong('joseph@example.com', { id: 'someid', title: 'thingy' })
 ```
@@ -49,15 +53,37 @@ songs: {
 	]
 }
 ```
+
 #api
 
-```js
-module.exports = {
-	getNextSong // finds the next user, removes the next song from their queue and returns/removes it.  Moves that user to the back of the user list
-	addSong(userId, song)
-	reorderSong(userId, [array of song ids in the new order])
-	reorderSong(userId, songId, newQueueLocationIndex)
-	addUser(userId, userState)
-	removeUser(userId) // returns userState
-}
-```
+##`var playlist = require('playlist-combinator')`
+
+##`var song = playlist.getNextSong()`
+
+- Removes the first song from the first user's queue.
+- Moves the first user to the back of the user list.
+- **Returns** the `song` object.
+
+##`playlist.addSong(userId, song)`
+
+- `userId` is a string. Each user must have their own unique string.
+- `song` is any object.
+
+##`playlist.reorderSong(userId, newArray)`
+
+- `newArray` is an array of song ids in the new order. You can remove songs, add songs, and reorder songs.
+
+##`playlist.reorderSong(userId, songId, newQueueLocationIndex)`
+
+- `userId` is a string. Each user must have their own unique string.
+- `songId` is compared to each `song.id` in the queue. This is the only place that `song.id` is assumed to exist.
+- `newQueueLocationIndex` is the number that the located song is relocated to.
+
+##`playlist.addUser(userId, userState)`
+
+- `userId` is a string. Each user must have their own unique string.
+- `userState` is an optional argument. It must come from `playlist.removeUser()`.
+
+##`var userState = playlist.removeUser(userId)`
+
+- **Returns** a `userState` object. This object can be passed into `playlist.addUser()` to start a new user with the same state that this user gave up. This could be used for changing a `userId` without losing their state, or saving a user's state for later use.

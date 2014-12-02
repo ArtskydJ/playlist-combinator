@@ -40,9 +40,9 @@ function reorder(emitErr, queues, queueKey, thing1, thing2) { //emitter and queu
 
 	function reorderItem(itemId, newIndex) {
 		var queue = queues[queueKey]
-		var oldIndex = queue.map(function (item, index) {
-			return (itemId === item.id) ? index : Infinity
-		}).filter(isFinite)[0]
+		var oldIndex = queue.reduce(function (memo, item, index) {
+			return (itemId === item.id)? index : memo
+		}, null)
 
 		if (typeof oldIndex === 'number' && typeof newIndex === 'number') {
 			var cutItem = queue.splice(oldIndex, 1)[0] //cut
