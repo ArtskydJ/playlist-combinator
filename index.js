@@ -1,22 +1,43 @@
 var EventEmitter = require('events').EventEmitter
+require('array.prototype.find')
 
 function getNextItem(emitErr, queues, queueKeys) { //emitter, queues, and queueKeys are bound
+	var len = Object.keys(queues).length
+	var len2 = queueKeys.length
+	if (len !== len2) {
+		emitErr(new Error('Number of keys in \'queues\', (' + len + ') doesn\'t match \'queueKeys.length\', (' + len2 + ').'))
+		return null
+	} else {
+		for (var i = 0; i<=len; i++) {
+			var key = queueKeys.shift()
+			if (queues[key].length) {
+				var item = queues[key].shift()
+				i = len + 1
+			}
+			queueKeys.push(key)
+		}
+		return item || null
+	}
+}
+
+function checkNextItem(emitErr, queues, queueKeys) { //emitter, queues, and queueKeys are bound
 	var n1 = Object.keys(queues).length
 	var n2 = queueKeys.length
 	if (n1 !== n2) {
 		emitErr(new Error('Number of keys in \'queues\', (' + n1 + ') doesn\'t match \'queueKeys.length\', (' + n2 + ').'))
 	}
-	var maxRepeat = Object.keys(queues).length
-
-	for (var i = 0; i<=maxRepeat; i++) {
-		var key = queueKeys.shift()
-		if (queues[key].length) {
-			var item = queues[key].shift()
-			i = maxRepeat + 1
-		}
-		queueKeys.push(key)
+	console.log(queueKeys)
+	var key = queueKeys.find(function (key) {
+		var q = queues[key]
+		return q && q.length
+	})
+	if (key) {
+		var queue = queues[key]
+		var item = queue[0]
+		return item
+	} else {
+		return null
 	}
-	return item || null
 }
 
 function addItem(emitErr, queues, queueKey, newItem) { //emitter and queues are bound
@@ -96,11 +117,12 @@ module.exports = function closure() {
 	var queueKeys = [] //users
 	var queues = {} //users' queues
 
-	emitter.getNextSong = getNextItem.bind(null, emitErr, queues, queueKeys) // () -> item
-	emitter.addSong =         addItem.bind(null, emitErr, queues)            // (userId, song)
-	emitter.reorderSong =     reorder.bind(null, emitErr, queues)            // (userId, [newly ordered array]) OR (userId, songId, newIndex)
-	emitter.addUser =          addKey.bind(null, emitErr, queues, queueKeys) // (userId, userState)
-	emitter.removeUser =    removeKey.bind(null, emitErr, queues, queueKeys) // (userId) -> userState
+	emitter.getNextSong =     getNextItem.bind(null, emitErr, queues, queueKeys) // () -> item
+	emitter.checkNextSong = checkNextItem.bind(null, emitErr, queues, queueKeys)
+	emitter.addSong =             addItem.bind(null, emitErr, queues)            // (userId, song)
+	emitter.reorderSong =         reorder.bind(null, emitErr, queues)            // (userId, [newly ordered array]) OR (userId, songId, newIndex)
+	emitter.addUser =              addKey.bind(null, emitErr, queues, queueKeys) // (userId, userState)
+	emitter.removeUser =        removeKey.bind(null, emitErr, queues, queueKeys) // (userId) -> userState
 
 	return emitter
 }

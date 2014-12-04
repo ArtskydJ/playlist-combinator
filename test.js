@@ -1,10 +1,12 @@
 var test = require('tap').test
 var Playlist = require('./index.js')
 
-function testInQueue(t, play) {
+function testInQueue(t, play, check) {
+	var fn = check ? play.checkNextSong : play.getNextSong
 	return function inQ(n) {
-		var id = play.getNextSong().id
-		t.equal(n, id, 'correct id, '+n+'==='+id)
+		var id = fn()
+		id = id && id.id
+		t.equal(n, id, 'correct id, '+n+'==='+id+(check?', check':''))
 	}
 }
 
@@ -20,6 +22,23 @@ test('addUser, getNextSong', function (t) {
 	play.addUser('josh', [{id:1}, {id:3}])
 
 	;[0,1,2,3,4,5,6].forEach(inQueue)
+	t.end()
+})
+
+test('addUser, checkNextSong', function (t) {
+	var play = Playlist()
+	var inQueue = testInQueue(t, play)
+	var nonMutateCheck = testInQueue(t, play, true)
+	var twoTest = function (n) {
+		nonMutateCheck(n)
+		inQueue(n)
+	}
+	play.on('error', t.fail.bind(t))
+	play.addUser('joseph', [{id: 0}, {id:2}, {id:4}, {id:5}, {id:6}])
+	play.addUser('josh', [{id:1}, {id:3}])
+
+	;[0,1,2,3,4,5,6].forEach(twoTest)
+	nonMutateCheck(null)
 	t.end()
 })
 
