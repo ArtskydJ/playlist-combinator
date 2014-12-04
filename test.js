@@ -1,5 +1,5 @@
 var test = require('tap').test
-var Playlist = require('./index.js')
+var PlaylistCombinator = require('./index.js')
 
 function testInQueue(t, play, check) {
 	var fn = check ? play.checkNextSong : play.getNextSong
@@ -15,7 +15,7 @@ function intoIds(n) {
 }
 
 test('addUser, getNextSong', function (t) {
-	var play = Playlist()
+	var play = PlaylistCombinator()
 	var inQueue = testInQueue(t, play)
 	play.on('error', t.fail.bind(t))
 	play.addUser('joseph', [{id: 0}, {id:2}, {id:4}, {id:5}, {id:6}])
@@ -26,7 +26,7 @@ test('addUser, getNextSong', function (t) {
 })
 
 test('addUser, checkNextSong', function (t) {
-	var play = Playlist()
+	var play = PlaylistCombinator()
 	var inQueue = testInQueue(t, play)
 	var nonMutateCheck = testInQueue(t, play, true)
 	var twoTest = function (n) {
@@ -43,7 +43,7 @@ test('addUser, checkNextSong', function (t) {
 })
 
 test('addSong', function (t) {
-	var play = Playlist()
+	var play = PlaylistCombinator()
 	var inQueue = testInQueue(t, play)
 	play.on('error', t.fail.bind(t))
 	play.addUser('joseph')
@@ -57,7 +57,7 @@ test('addSong', function (t) {
 })
 
 test('reorderSong array', function (t) {
-	var play = Playlist()
+	var play = PlaylistCombinator()
 	var inQueue = testInQueue(t, play)
 	play.on('error', t.fail.bind(t))
 	play.addUser('joseph', [1,3].map(intoIds))
@@ -71,7 +71,7 @@ test('reorderSong array', function (t) {
 })
 
 test('reorderSong id, index', function (t) {
-	var play = Playlist()
+	var play = PlaylistCombinator()
 	var inQueue = testInQueue(t, play)
 	play.on('error', t.fail.bind(t))
 	play.addUser('joseph', [4,2,6,0,5].map(intoIds))
@@ -87,7 +87,7 @@ test('reorderSong id, index', function (t) {
 })
 
 test('removeUser', function (t) {
-	var play = Playlist()
+	var play = PlaylistCombinator()
 	var inQueue = testInQueue(t, play)
 	var state = []
 	play.on('error', t.fail.bind(t))
