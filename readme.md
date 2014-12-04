@@ -69,6 +69,12 @@ var playlist = PlaylistCombinator()
 - Moves the first user to the back of the user list.
 - **Returns** the `song` object.
 
+###var song = playlist.checkNextSong()
+
+Basically `playlist.getNextSong()` but this does not mutate the playlist.
+
+- **Returns** the first song from the first user's queue.
+
 ###playlist.addSong(userId, song)
 
 - `userId` is a string. Each user must have their own unique string. The `userId` must have been added via `playlist.addUser(userId)` previous to calling this.
