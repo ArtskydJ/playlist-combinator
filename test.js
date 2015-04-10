@@ -1,4 +1,4 @@
-var test = require('tap').test
+var test = require('tape')
 var PlaylistCombinator = require('./index.js')
 
 function testInQueue(t, play, check) {

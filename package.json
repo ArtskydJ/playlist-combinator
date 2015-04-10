@@ -1,10 +1,10 @@
 {
   "name": "playlist-combinator",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A thing to mix up users and their playlists.",
   "main": "index.js",
   "scripts": {
-    "test": "tap test.js"
+    "test": "tape test.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/ArtskydJ/playlist-combinator",
   "devDependencies": {
-    "tap": "^0.4.13"
+    "tape": "^4.0.0"
   },
   "dependencies": {
     "array.prototype.find": "^1.0.0"
