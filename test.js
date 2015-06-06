@@ -29,7 +29,7 @@ test('addUser, checkNextSong', function (t) {
 	var play = PlaylistCombinator()
 	var inQueue = testInQueue(t, play)
 	var nonMutateCheck = testInQueue(t, play, true)
-	var twoTest = function (n) {
+	function twoTest(n) {
 		nonMutateCheck(n)
 		inQueue(n)
 	}
