@@ -16,47 +16,44 @@ playlist.on('error', function (err) {
 	console.log(err)
 })
 
-playlist.addUser('josh@example.com', [ { id: 'hash', title: 'whatever' } ])
-playlist.addUser('joseph@example.com')
+playlist.addUser('Wheatley', [ 'accent' ])
+playlist.addUser('GLaDOS')
 
-playlist.addSong('joseph@example.com', { id: 'otherhash', title: 'whatever 2' })
-playlist.addSong('joseph@example.com', { id: 'somemoreid', title: 'o, hi' })
-playlist.addSong('joseph@example.com', { id: 'someid', title: 'thingy' })
+playlist.addSong('GLaDOS', 'potato')
+playlist.addSong('GLaDOS', 'neurotoxin')
+playlist.addSong('GLaDOS', 'Caroline')
 ```
 
 Internally:
 ```js
-userOrder: ['joseph@example.com', 'josh@example.com']
+userOrder: ['GLaDOS', 'Wheatley']
 songs: {
-	"josh@example.com": [
-		{ id: 'hash', title: 'whatever' }
-	]
-	"joseph@example.com": [
-		{ id: 'otherhash', title: 'whatever 2' },
-		{ id: 'somemoreid', title: 'o, hi' },
-		{ id: 'someid', title: 'thingy' }
-	]
+	"Wheatley": [ 'accent' ],
+	"GLaDOS": [ 'potato', 'neurotoxin', 'Caroline' ]
 }
 ```
 
 Run this code:
 ```js
-var song = playlist.getNextSong() //returns => { id: 'otherhash', title: 'whatever 2' }
+var song = playlist.getNextSong() //returns => 'potato'
 ```
 
 Internally:
 ```js
-userOrder: ['josh@example.com', 'joseph@example.com'] //note that 'joseph' was moved to the back; it's 'josh's turn next
+userOrder: ['Wheatley', 'GLaDOS'] //note that GLaDOS was moved to the back; and it's Wheatley's turn next
 songs: {
-	"josh@example.com": [
-		{ id: 'hash', title: 'whatever' }
-	]
-	"joseph@example.com": [
-		{ id: 'somemoreid', title: 'o, hi' },
-		{ id: 'someid', title: 'thingy' }
-	]
+	"Wheatley": [ 'accent' ]
+	"GLaDOS": [ 'neurotoxin', 'Caroline' ]
 }
 ```
+
+Run this code:
+```js
+var song = playlist.getNextSong() //returns => 'accent'
+var song = playlist.getNextSong() //returns => 'neurotoxin'
+var song = playlist.getNextSong() //returns => 'Caroline'
+```
+
 
 # api
 
