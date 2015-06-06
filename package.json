@@ -1,6 +1,6 @@
 {
   "name": "playlist-combinator",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A thing to mix up users and their playlists.",
   "main": "index.js",
   "scripts": {
